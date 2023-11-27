@@ -20,6 +20,10 @@ public class Emprunt {
     @ManyToOne
     private Document document;
 
+    public Emprunt() {
+        dateEmprunt = LocalDate.now();
+    }
+
     public Integer getId() {
         return id;
     }

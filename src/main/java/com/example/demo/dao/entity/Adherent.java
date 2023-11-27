@@ -3,6 +3,8 @@ package com.example.demo.dao.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -17,6 +19,9 @@ public class Adherent {
     private String nom;
     private String email;
     private LocalDate finAdhesion;
+
+    @OneToMany
+    private List<Emprunt> emprunts = new ArrayList<>();
 
     public Adherent() {
         this.finAdhesion = LocalDate.now().plusYears(1);
@@ -66,6 +71,18 @@ public class Adherent {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<Emprunt> getEmprunts() {
+        return emprunts;
+    }
+
+    public void setEmprunts(List<Emprunt> emprunts) {
+        this.emprunts = emprunts;
+    }
+
+    public void addEmprunt(Emprunt emprunt){
+        emprunts.add(emprunt);
     }
 
     @Override
