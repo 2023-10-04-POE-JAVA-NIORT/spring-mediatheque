@@ -4,6 +4,7 @@ import com.example.demo.dao.entity.Document;
 import com.example.demo.dao.entity.Emprunt;
 import com.example.demo.metier.MediathequeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +24,11 @@ public class EmpruntController {
     }
 
     @PostMapping("emprunts")
-    public void addEmprunt(@RequestBody Emprunt emprunt){
-        mediathequeService.realiserEmprunt(emprunt);
+    public ResponseEntity addEmprunt(@RequestBody Emprunt emprunt){
+        if(mediathequeService.realiserEmprunt(emprunt)){
+            return ResponseEntity.status(201).build();
+        }
+        else
+            return ResponseEntity.badRequest().body("Emprunt REFUSE");
     }
 }

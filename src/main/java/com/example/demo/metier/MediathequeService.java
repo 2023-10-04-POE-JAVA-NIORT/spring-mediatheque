@@ -42,8 +42,7 @@ public class MediathequeService {
         return empruntRepository.findAll();
     }
 
-    @Transactional
-    public void realiserEmprunt(Emprunt empruntDTO){
+    public boolean realiserEmprunt(Emprunt empruntDTO){
         Adherent adherent = empruntDTO.getAdherent();
         Document document = empruntDTO.getDocument();
 
@@ -51,9 +50,14 @@ public class MediathequeService {
             Emprunt emprunt = Mediatheque
                     .realiseEmprunt(adherent, document);
 
-            documentRepository.saveAndFlush(document);
-            adherentRepository.saveAndFlush(adherent);
-            empruntRepository.saveAndFlush(emprunt);
+            empruntRepository.save(emprunt);
+            adherentRepository.save(adherent);
+            documentRepository.save(document);
+
+            return true;
+        }
+        else {
+            return false;
         }
     }
 }

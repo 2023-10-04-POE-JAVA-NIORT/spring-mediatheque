@@ -1,5 +1,6 @@
 package com.example.demo.dao.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -21,6 +22,7 @@ public class Adherent {
     private LocalDate finAdhesion;
 
     @OneToMany
+    @JsonIgnoreProperties({ "document", "adherent"})
     private List<Emprunt> emprunts = new ArrayList<>();
 
     public Adherent() {
