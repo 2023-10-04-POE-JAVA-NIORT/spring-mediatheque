@@ -2,6 +2,7 @@ package com.example.demo;
 
 import com.example.demo.dao.entity.Adherent;
 import com.example.demo.dao.entity.Document;
+import com.example.demo.metier.DemandeEmpruntStatut;
 import com.example.demo.metier.Mediatheque;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +17,8 @@ class UnitTests {
 		Document document = new Document();
 		Adherent adherent = new Adherent();
 
-		assertTrue(Mediatheque.canEmprunter(adherent, document));
+		assertEquals(DemandeEmpruntStatut.ACCEPTE,
+				Mediatheque.canEmprunter(adherent, document));
 	}
 
 	@Test
@@ -25,7 +27,8 @@ class UnitTests {
 		Adherent adherent = new Adherent();
 		adherent.setFinAdhesion(LocalDate.now().minusDays(1));
 
-		assertFalse(Mediatheque.canEmprunter(adherent, document));
+		assertEquals(DemandeEmpruntStatut.REFUSE_ADHESION_PERIMEE
+				, Mediatheque.canEmprunter(adherent, document));
 	}
 
 	@Test
@@ -35,7 +38,8 @@ class UnitTests {
 
 		Adherent adherent = new Adherent();
 
-		assertFalse(Mediatheque.canEmprunter(adherent, document));
+		assertEquals(DemandeEmpruntStatut.REFUSE_DOCUMENT_NON_DISPONIBLE,
+				Mediatheque.canEmprunter(adherent, document));
 	}
 
 	@Test
@@ -46,6 +50,7 @@ class UnitTests {
 		Mediatheque.realiseEmprunt(adherent, new Document());
 		Mediatheque.realiseEmprunt(adherent, new Document());
 
-		assertFalse(Mediatheque.canEmprunter(adherent, new Document()));
+		assertEquals(DemandeEmpruntStatut.REFUSE_QUOTA_ATTEINT,
+				Mediatheque.canEmprunter(adherent, new Document()));
 	}
 }

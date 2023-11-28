@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MediathequeService {
@@ -42,22 +43,28 @@ public class MediathequeService {
         return empruntRepository.findAll();
     }
 
-    public boolean realiserEmprunt(Emprunt empruntDTO){
-        Adherent adherent = empruntDTO.getAdherent();
-        Document document = empruntDTO.getDocument();
+    public boolean realiserEmprunt(Emprunt empruntJSON, Adherent adherentFromDatabase, Document documentFromDatabase){
+        DemandeEmpruntStatut statut = Mediatheque.canEmprunter(adherentFromDatabase, documentFromDatabase);
+        if(statut.equals(DemandeEmpruntStatut.ACCEPTE)){
+            Emprunt newEmprunt = Mediatheque
+                    .realiseEmprunt(adherentFromDatabase, documentFromDatabase);
 
-        if(Mediatheque.canEmprunter(adherent, document)){
-            Emprunt emprunt = Mediatheque
-                    .realiseEmprunt(adherent, document);
-
-            empruntRepository.save(emprunt);
-            adherentRepository.save(adherent);
-            documentRepository.save(document);
+            empruntRepository.save(newEmprunt);
+            adherentRepository.save(adherentFromDatabase);
+            documentRepository.save(documentFromDatabase);
 
             return true;
         }
         else {
             return false;
         }
+    }
+
+    public Optional<Document> getDocumentById(Integer id) {
+        return documentRepository.findById(id);
+    }
+
+    public Optional<Adherent> getAdherentById(Integer id) {
+        return adherentRepository.findById(id);
     }
 }
